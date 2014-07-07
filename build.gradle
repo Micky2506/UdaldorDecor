@@ -22,7 +22,7 @@ apply plugin: 'forge'
 ext.env = System.getenv()
 ext.cclVersion = "1.1.1.81"
 
-version = "0.0.3"
+version = "0.0.4"
 group = "com.micky.udaldordecor"
 archivesBaseName = "UdaldorDecor-1.7.2"
 

@@ -44,6 +44,7 @@ public class RendererDisplayCase extends TileEntitySpecialRenderer
             tick = 0;
 
         float translate = 0.5F;
+        int tickMultiplier = 10;
 
         if (tileEntity instanceof TileDisplayCase)
         {
@@ -54,11 +55,15 @@ public class RendererDisplayCase extends TileEntitySpecialRenderer
                 {
                     Entity entity = EntityList.createEntityByID(tile.stack.getItemDamage(), tile.getWorldObj());
                     if (entity != null) {
-                        double ratio = 0.5D;
+//                        float entityHeight = entity.height;
+//                        float entityWidth = entity.width;
+                        float heightRatio = 0.5F;
+                        float widthRatio = 0.5F;
+                        float scaleFactor = 1 / Math.min(entity.height, entity.width);
                         GL11.glPushMatrix();
                         GL11.glTranslated(x + translate, y, z + translate);
-                        GL11.glScaled(ratio, ratio, ratio);
-                        GL11.glRotatef(360F - tick, 0F, 1F, 0F);
+                        GL11.glScalef(scaleFactor, scaleFactor, scaleFactor);
+                        GL11.glRotatef(360F - tick*tickMultiplier, 0F, 1F, 0F);
 
                         if (tile.hasWorldObj()) {
                             Render renderer = RenderManager.instance.getEntityRenderObject(entity);
@@ -80,7 +85,7 @@ public class RendererDisplayCase extends TileEntitySpecialRenderer
                     GL11.glPushMatrix();
                     GL11.glTranslated(x + translate, y + translate, z + translate);
                     GL11.glScalef(scale, scale, scale);
-                    GL11.glRotatef(360.0F - tick, 0.0F, 1.0F, 0.0F);
+                    GL11.glRotatef(360.0F - tick*tickMultiplier, 0.0F, 1.0F, 0.0F);
                     entityItem.setEntityItemStack(tile.stack);
                     renderer.doRender(entityItem, 0D, 0D, 0D, 0F, 0F);
                     GL11.glPopMatrix();

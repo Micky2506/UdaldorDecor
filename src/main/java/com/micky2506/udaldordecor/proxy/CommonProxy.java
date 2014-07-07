@@ -1,7 +1,9 @@
 package com.micky2506.udaldordecor.proxy;
 
+import com.micky2506.udaldordecor.event.TickEvent;
 import com.micky2506.udaldordecor.lib.Names;
 import com.micky2506.udaldordecor.tileentity.TileDisplayCase;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy
@@ -50,6 +52,6 @@ public class CommonProxy
 
     public void registerEventHandlers()
     {
-
+//        FMLCommonHandler.instance().bus().register(new TickEvent());
     }
 }

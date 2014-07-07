@@ -2,8 +2,10 @@ package com.micky2506.udaldordecor;
 
 import com.micky2506.udaldordecor.block.ModBlocks;
 import com.micky2506.udaldordecor.creativetab.CreativeTabUdaldorDecor;
+import com.micky2506.udaldordecor.event.TickEvent;
 import com.micky2506.udaldordecor.lib.Reference;
 import com.micky2506.udaldordecor.proxy.CommonProxy;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -32,6 +34,7 @@ public class UdaldorDecor
     {
         ModBlocks.init();
         proxy.registerEventHandlers();
+        FMLCommonHandler.instance().bus().register(new TickEvent());
     }
 
     @Mod.EventHandler

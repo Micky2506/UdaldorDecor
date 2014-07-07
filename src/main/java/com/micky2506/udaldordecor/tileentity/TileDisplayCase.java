@@ -22,14 +22,11 @@ public class TileDisplayCase extends TileEntity implements IInventory
 
     public boolean onActivated(World world, EntityPlayer player, ItemStack playerStack)
     {
-//        if (world.isRemote)
-//        {
-            if (playerStack != null)
-            {
-                this.stack = playerStack.copy();
-                this.stack.stackSize = 1;
-            }
-//        }
+        if (playerStack != null)
+        {
+            this.stack = playerStack.copy();
+            this.stack.stackSize = 1;
+        }
         world.markBlockForUpdate(xCoord, yCoord, zCoord);
         markDirty();
         return true;
@@ -41,7 +38,7 @@ public class TileDisplayCase extends TileEntity implements IInventory
         super.readFromNBT(compound);
         if (compound.hasKey("Items"))
         {
-            NBTTagList tagList = compound.getTagList("Items", 1);
+            NBTTagList tagList = compound.getTagList("Items", 10);
             NBTTagCompound itemCompound = tagList.getCompoundTagAt(0);
             stack = ItemStack.loadItemStackFromNBT(itemCompound);
         }
@@ -53,7 +50,6 @@ public class TileDisplayCase extends TileEntity implements IInventory
         super.writeToNBT(compound);
         if (this.stack != null)
         {
-            System.out.println("Writing to NBT");
             NBTTagList itemTagList = new NBTTagList();
             NBTTagCompound itemCompound = new NBTTagCompound();
             itemCompound = this.stack.writeToNBT(itemCompound);
