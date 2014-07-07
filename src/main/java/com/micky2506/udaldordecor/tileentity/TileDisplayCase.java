@@ -1,5 +1,6 @@
 package com.micky2506.udaldordecor.tileentity;
 
+import com.micky2506.udaldordecor.helper.IOHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -10,32 +11,73 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.transformers.ForgeAccessTransformer;
 
 public class TileDisplayCase extends TileEntity implements IInventory
 {
     public ItemStack stack;
+    public int clickedSide = -1;
 
     public TileDisplayCase()
     {
-//        stack = null;
     }
 
-    public boolean onActivated(World world, EntityPlayer player, ItemStack playerStack)
+    public boolean onActivated(World world, EntityPlayer player, ItemStack playerStack, int side)
     {
         if (playerStack != null)
         {
+            if (this.stack != null)
+            {
+                dropInventory(player.posX, player.posY, player.posZ, player.capabilities.isCreativeMode);
+            }
+
             this.stack = playerStack.copy();
+            if (!player.capabilities.isCreativeMode)
+            {
+                --playerStack.stackSize;
+                if (playerStack.stackSize <= 0)
+                    playerStack = null;
+            }
             this.stack.stackSize = 1;
         }
-        world.markBlockForUpdate(xCoord, yCoord, zCoord);
+        else
+        {
+
+            if (player.isSneaking())
+            {
+                if (side == this.clickedSide && this.clickedSide == ForgeDirection.UP.ordinal() && stack != null)
+                {
+                    dropInventory(player.posX, player.posY, player.posZ, player.capabilities.isCreativeMode);
+                    return true;
+                }
+
+                this.clickedSide = -1; // Set to inside the block
+            }
+            else
+            {
+                this.clickedSide = side;
+            }
+        }
+
         markDirty();
         return true;
+    }
+
+    private void dropInventory(double x, double y, double z, boolean justEmpty)
+    {
+
+        if (stack != null && !justEmpty)
+            IOHelper.spawnItemInWorld(this.getWorldObj(), stack, x, y, z);
+        stack = null;
+        markDirty();
     }
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
+        clickedSide = compound.getInteger("clickedSide");
         if (compound.hasKey("Items"))
         {
             NBTTagList tagList = compound.getTagList("Items", 10);
@@ -48,6 +90,7 @@ public class TileDisplayCase extends TileEntity implements IInventory
     public void writeToNBT(NBTTagCompound compound)
     {
         super.writeToNBT(compound);
+        compound.setInteger("clickedSide", clickedSide);
         if (this.stack != null)
         {
             NBTTagList itemTagList = new NBTTagList();
@@ -71,6 +114,14 @@ public class TileDisplayCase extends TileEntity implements IInventory
         NBTTagCompound tag = new NBTTagCompound(); //ObfuscationReflectionHelper.getPrivateValue(S35PacketUpdateTileEntity.class, pkt, "field_148860_e", "e");
         writeToNBT(tag);
         return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
+    }
+
+    public ItemStack[] getDrops()
+    {
+        if (stack != null)
+            return new ItemStack[] { stack };
+        else
+            return new ItemStack[]{};
     }
 
     /**
@@ -109,6 +160,7 @@ public class TileDisplayCase extends TileEntity implements IInventory
         if (stack.stackSize <= 0)
         {
             stack = null;
+            markDirty();
         }
         return returnedStack;
     }

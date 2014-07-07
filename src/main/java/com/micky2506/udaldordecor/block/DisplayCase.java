@@ -1,6 +1,7 @@
 package com.micky2506.udaldordecor.block;
 
 import com.micky2506.udaldordecor.UdaldorDecor;
+import com.micky2506.udaldordecor.helper.IOHelper;
 import com.micky2506.udaldordecor.lib.Names;
 import com.micky2506.udaldordecor.lib.Resources;
 import com.micky2506.udaldordecor.tileentity.TileDisplayCase;
@@ -11,11 +12,16 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Random;
 
 public class DisplayCase extends BlockContainer
 {
@@ -27,6 +33,7 @@ public class DisplayCase extends BlockContainer
         this.setBlockName(Names.displayCase);
         this.setHardness(2.0F);
         this.setCreativeTab(UdaldorDecor.tabUdaldorDecor);
+        this.setHarvestLevel("pickaxe", 0);
     }
 
     @Override
@@ -38,12 +45,12 @@ public class DisplayCase extends BlockContainer
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile != null && tile instanceof TileDisplayCase)
         {
-            return ((TileDisplayCase)tile).onActivated(world, player, player.getHeldItem());
+            return ((TileDisplayCase)tile).onActivated(world, player, player.getHeldItem(), side);
         }
         return false;
     }
@@ -73,6 +80,20 @@ public class DisplayCase extends BlockContainer
     public IIcon getIcon(int par1, int par2)
     {
         return icons[0];
+    }
+
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    {
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile != null && tile instanceof TileDisplayCase)
+        {
+            for (ItemStack stack : ((TileDisplayCase)tile).getDrops())
+            {
+                IOHelper.spawnItemInWorld(world, stack, x, y, z);
+            }
+        }
+        super.breakBlock(world, x, y, z, block, meta);
     }
 
     @Override
