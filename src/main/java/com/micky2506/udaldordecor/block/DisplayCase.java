@@ -30,12 +30,6 @@ public class DisplayCase extends BlockContainer
     }
 
     @Override
-    public TileEntity createNewTileEntity(World var1, int var2)
-    {
-        return new TileDisplayCase();
-    }
-
-    @Override
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
     {
         ForgeDirection direction = ForgeDirection.getOrientation(side);
@@ -52,6 +46,21 @@ public class DisplayCase extends BlockContainer
             return ((TileDisplayCase)tile).onActivated(world, player, player.getHeldItem());
         }
         return false;
+    }
+
+    /**
+     * Called throughout the code as a replacement for ITileEntityProvider.createNewTileEntity
+     * Return the same thing you would from that function.
+     * This will fall back to ITileEntityProvider.createNewTileEntity(World) if this block is a ITileEntityProvider
+     *
+     * @param world
+     * @param metadata The Metadata of the current block
+     * @return A instance of a class extending TileEntity
+     */
+    @Override
+    public TileEntity createTileEntity(World world, int metadata)
+    {
+        return new TileDisplayCase();
     }
 
     @Override
@@ -77,5 +86,17 @@ public class DisplayCase extends BlockContainer
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         icons[0] = iconRegister.registerIcon(Resources.MOD_ID + ":" + Names.displayCase);
+    }
+
+    /**
+     * Returns a new instance of a block's tile entity class. Called on placing the block.
+     *
+     * @param var1
+     * @param var2
+     */
+    @Override
+    public TileEntity createNewTileEntity(World var1, int var2)
+    {
+        return new TileDisplayCase();
     }
 }

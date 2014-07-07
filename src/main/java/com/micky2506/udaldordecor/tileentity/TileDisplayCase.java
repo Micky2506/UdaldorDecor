@@ -17,7 +17,7 @@ public class TileDisplayCase extends TileEntity implements IInventory
 
     public TileDisplayCase()
     {
-        stack = null;
+//        stack = null;
     }
 
     public boolean onActivated(World world, EntityPlayer player, ItemStack playerStack)
@@ -26,7 +26,6 @@ public class TileDisplayCase extends TileEntity implements IInventory
 //        {
             if (playerStack != null)
             {
-//                System.out.println("newStack");
                 this.stack = playerStack.copy();
                 this.stack.stackSize = 1;
             }
@@ -39,25 +38,19 @@ public class TileDisplayCase extends TileEntity implements IInventory
     @Override
     public void readFromNBT(NBTTagCompound compound)
     {
-        System.out.println("Reading from NBT");
+        super.readFromNBT(compound);
         if (compound.hasKey("Items"))
         {
-            NBTTagList tagList = compound.getTagList("Items", 10);
+            NBTTagList tagList = compound.getTagList("Items", 1);
             NBTTagCompound itemCompound = tagList.getCompoundTagAt(0);
             stack = ItemStack.loadItemStackFromNBT(itemCompound);
         }
-
-////        this.stack = null;
-////
-////        NBTTagCompound nbttagcompound1 = tagList.getCompoundTagAt(0);
-//        stack = ItemStack.loadItemStackFromNBT(compound);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
         super.writeToNBT(compound);
-
         if (this.stack != null)
         {
             System.out.println("Writing to NBT");

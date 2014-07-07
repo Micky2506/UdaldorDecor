@@ -32,11 +32,11 @@ public class UdaldorDecor
     {
         ModBlocks.init();
         proxy.registerEventHandlers();
-        proxy.initTileEntities();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
+        proxy.initTileEntities();
     }
 }
