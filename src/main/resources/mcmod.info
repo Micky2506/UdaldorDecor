@@ -1,0 +1,16 @@
+[
+{
+  "modid": "UdaldorDecor",
+  "name": "Udaldor's Decor",
+  "description": "Decoration by specification.",
+  "version": "@VERSION@",
+  "mcversion": "@MCVERSION@",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["Micky2506"],
+  "credits": "Micky2506 for creating the mod.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

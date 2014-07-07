@@ -1,0 +1,14 @@
+{
+	"versionList": [
+		{
+			"mcVersion":"Minecraft 1.7.2",
+			"modVersion":"0.0.3",
+			"changeLog": [
+				"Added proper rotation and crafting recipes."
+			],
+			"updateURL":"",
+			"isDirectLink":"false",
+			"newFileName":""
+		}
+	]
+}
