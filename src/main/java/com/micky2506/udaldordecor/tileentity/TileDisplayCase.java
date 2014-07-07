@@ -40,11 +40,17 @@ public class TileDisplayCase extends TileEntity implements IInventory
     public void readFromNBT(NBTTagCompound compound)
     {
         System.out.println("Reading from NBT");
-        NBTTagList tagList = compound.getTagList("Items", 10);
-        this.stack = null;
+        if (compound.hasKey("Items"))
+        {
+            NBTTagList tagList = compound.getTagList("Items", 10);
+            NBTTagCompound itemCompound = tagList.getCompoundTagAt(0);
+            stack = ItemStack.loadItemStackFromNBT(itemCompound);
+        }
 
-        NBTTagCompound nbttagcompound1 = tagList.getCompoundTagAt(0);
-        stack = ItemStack.loadItemStackFromNBT(nbttagcompound1);
+////        this.stack = null;
+////
+////        NBTTagCompound nbttagcompound1 = tagList.getCompoundTagAt(0);
+//        stack = ItemStack.loadItemStackFromNBT(compound);
     }
 
     @Override
@@ -55,7 +61,11 @@ public class TileDisplayCase extends TileEntity implements IInventory
         if (this.stack != null)
         {
             System.out.println("Writing to NBT");
-            this.stack.writeToNBT(compound);
+            NBTTagList itemTagList = new NBTTagList();
+            NBTTagCompound itemCompound = new NBTTagCompound();
+            itemCompound = this.stack.writeToNBT(itemCompound);
+            itemTagList.appendTag(itemCompound);
+            compound.setTag("Items", itemTagList);
         }
 
     }
@@ -63,7 +73,7 @@ public class TileDisplayCase extends TileEntity implements IInventory
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
-        this.stack = ItemStack.loadItemStackFromNBT(pkt.func_148857_g());
+        readFromNBT(pkt.func_148857_g());
     }
 
     @Override
