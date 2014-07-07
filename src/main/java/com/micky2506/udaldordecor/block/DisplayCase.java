@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -25,7 +24,7 @@ public class DisplayCase extends BlockContainer
     public DisplayCase()
     {
         super(Material.glass);
-        this.setBlockName("Display Case");
+        this.setBlockName(Names.displayCase);
         this.setHardness(2.0F);
         this.setCreativeTab(UdaldorDecor.tabUdaldorDecor);
     }

@@ -2,14 +2,13 @@ package com.micky2506.udaldordecor.proxy;
 
 import com.micky2506.udaldordecor.lib.Names;
 import com.micky2506.udaldordecor.tileentity.TileDisplayCase;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy
 {
     public void initTileEntities()
     {
-        GameRegistry.registerTileEntity(TileDisplayCase.class, Names.displayCase);
+        GameRegistry.registerTileEntity(com.micky2506.udaldordecor.tileentity.TileDisplayCase.class, Names.displayCase);
 //        GameRegistry.registerTileEntity(TileAdvancedBlockExtender.class, Names.advancedBlockExtender);
 //        GameRegistry.registerTileEntity(TileFilteredBlockExtender.class, Names.filteredBlockExtender);
 //        GameRegistry.registerTileEntity(TileAdvancedFilteredBlockExtender.class, Names.advancedFilteredBlockExtender);
@@ -51,5 +50,6 @@ public class CommonProxy
 
     public void registerEventHandlers()
     {
+
     }
 }

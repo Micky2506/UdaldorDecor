@@ -25,7 +25,6 @@ public class UdaldorDecor
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event)
     {
-        //event.registerServerCommand(new CommandRefinedRelocation());
     }
 
     @Mod.EventHandler
@@ -34,38 +33,10 @@ public class UdaldorDecor
         ModBlocks.init();
         proxy.registerEventHandlers();
         proxy.initTileEntities();
-//        LogHelper.init();
-//
-//        VersionChecker.execute();
-//
-//        ConfigHandler.init(event.getSuggestedConfigurationFile());
-//
-//        TickRegistry.registerTickHandler(new TickEvent(), Side.CLIENT);
-//
-//        GameRegistry.registerPlayerTracker(new PlayerTracker());
-//
-//
-//        ModItems.init();
-//
-//        ModMultiBlocks.init();
-//
-//        RelocatorModuleRegistry.registerModules();
-//
-//
-//        ForgeChunkManager.setForcedChunkLoadingCallback(this, new LoadingCallbackHelper());
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
-//        if (Mods.IS_FMP_LOADED)
-//        {
-//            FMPHelper.addFMPBlocks();
-//            FMPHelper.addFMPRecipes();
-//        }
-//
-//        proxy.initTileEntities();
-//
-//        FMLInterModComms.sendMessage("Waila", "register", "com.dynious.refinedrelocation.mods.WailaProvider.callbackRegister");
     }
 }
