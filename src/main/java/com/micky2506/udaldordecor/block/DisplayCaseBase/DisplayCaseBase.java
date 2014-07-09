@@ -5,7 +5,6 @@ import com.micky2506.udaldordecor.helper.IOHelper;
 import com.micky2506.udaldordecor.lib.Names;
 import com.micky2506.udaldordecor.lib.Resources;
 import com.micky2506.udaldordecor.tileentity.DisplayCaseTileBase;
-import com.micky2506.udaldordecor.tileentity.TileDisplayCase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -76,9 +75,9 @@ public abstract class DisplayCaseBase extends BlockContainer
     public void breakBlock(World world, int x, int y, int z, Block block, int meta)
     {
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile != null && tile instanceof TileDisplayCase)
+        if (tile != null && tile instanceof DisplayCaseTileBase)
         {
-            for (ItemStack stack : ((TileDisplayCase)tile).getDrops())
+            for (ItemStack stack : ((DisplayCaseTileBase)tile).getDrops())
             {
                 IOHelper.spawnItemInWorld(world, stack, x, y, z);
             }

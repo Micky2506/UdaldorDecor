@@ -13,7 +13,7 @@ public class ModBlocks
     {
         displayCase = new BlockDisplayCase();
 
-        GameRegistry.registerBlock(displayCase, Names.displayCase);
+        GameRegistry.registerBlock(displayCase, ItemBlockDisplayCase.class, Names.displayCase);
 
         GameRegistry.addShapedRecipe(new ItemStack(displayCase, 1, 0), "ggg", "gig", "ggg", 'i', Blocks.glass_pane, 'g', Blocks.glass);
     }

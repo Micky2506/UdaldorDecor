@@ -59,10 +59,7 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
         return true;
     }
 
-    public boolean doRotate()
-    {
-        return false;
-    }
+    public abstract boolean doRotate();
 
     private void dropInventory(double x, double y, double z, boolean justEmpty)
     {

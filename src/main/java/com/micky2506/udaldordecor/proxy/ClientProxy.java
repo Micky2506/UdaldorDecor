@@ -1,7 +1,9 @@
 package com.micky2506.udaldordecor.proxy;
 
 import com.micky2506.udaldordecor.renderer.RendererDisplayCase;
-import com.micky2506.udaldordecor.tileentity.TileDisplayCase;
+import com.micky2506.udaldordecor.tileentity.DisplayCaseTileBase;
+import com.micky2506.udaldordecor.tileentity.TileRotatingDisplayCase;
+import com.micky2506.udaldordecor.tileentity.TileTrackingDisplayCase;
 import cpw.mods.fml.client.registry.ClientRegistry;
 
 public class ClientProxy extends CommonProxy
@@ -10,7 +12,8 @@ public class ClientProxy extends CommonProxy
     public void initTileEntities()
     {
         super.initTileEntities();
-        ClientRegistry.bindTileEntitySpecialRenderer(TileDisplayCase.class, new RendererDisplayCase());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileRotatingDisplayCase.class, new RendererDisplayCase());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileTrackingDisplayCase.class, new RendererDisplayCase());
 //        ClientRegistry.bindTileEntitySpecialRenderer(TileWirelessBlockExtender.class, new RendererWirelessBlockExtender());
 //        ClientRegistry.bindTileEntitySpecialRenderer(TileBuffer.class, new RendererBuffer());
 //        ClientRegistry.bindTileEntitySpecialRenderer(TileSortingChest.class, new RendererSortingChest());

@@ -1,5 +1,6 @@
 # Block localizations
-tile.displayCase.name=Display Case
+tile.displayCase0.name=Display Case Rotating
+tile.displayCase1.name=Display Case Player Tracker
 
 # Item Localizations
 item.entityNet.name=Entity Net

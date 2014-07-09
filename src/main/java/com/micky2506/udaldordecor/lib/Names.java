@@ -7,4 +7,8 @@ public class Names
 
     // Items
     public static final String entityNet = "entityNet";
+
+    //TEs
+    public static final String displayCaseRotating = "displayCaseRotating";
+    public static final String displayCaseTracking = "displayCaseTracking";
 }

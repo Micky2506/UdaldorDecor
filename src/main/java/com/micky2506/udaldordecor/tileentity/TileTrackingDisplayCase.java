@@ -14,10 +14,16 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileDisplayCase extends DisplayCaseTileBase
+public class TileTrackingDisplayCase extends DisplayCaseTileBase
 {
-    public TileDisplayCase()
+    public TileTrackingDisplayCase()
     {
         // Init code
+    }
+
+    @Override
+    public boolean doRotate()
+    {
+        return false;
     }
 }
