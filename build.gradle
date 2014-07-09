@@ -13,7 +13,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.3-SNAPSHOT'
     }
 }
 
@@ -22,7 +22,7 @@ apply plugin: 'forge'
 ext.env = System.getenv()
 ext.cclVersion = "1.1.1.81"
 
-version = "0.0.7"
+version = "0.0.7a"
 group = "com.micky.udaldordecor"
 archivesBaseName = "UdaldorDecor-1.7.x"
 
