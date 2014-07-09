@@ -7,11 +7,11 @@ import net.minecraft.item.ItemStack;
 
 public class ModBlocks
 {
-    public static DisplayCase displayCase;
+    public static BlockDisplayCase displayCase;
 
     public static void init()
     {
-        displayCase = new DisplayCase();
+        displayCase = new BlockDisplayCase();
 
         GameRegistry.registerBlock(displayCase, Names.displayCase);
 

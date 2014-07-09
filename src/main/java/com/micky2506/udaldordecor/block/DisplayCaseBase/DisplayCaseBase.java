@@ -1,9 +1,10 @@
-package com.micky2506.udaldordecor.block;
+package com.micky2506.udaldordecor.block.DisplayCaseBase;
 
 import com.micky2506.udaldordecor.UdaldorDecor;
 import com.micky2506.udaldordecor.helper.IOHelper;
 import com.micky2506.udaldordecor.lib.Names;
 import com.micky2506.udaldordecor.lib.Resources;
+import com.micky2506.udaldordecor.tileentity.DisplayCaseTileBase;
 import com.micky2506.udaldordecor.tileentity.TileDisplayCase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -12,28 +13,34 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.Random;
-
-public class DisplayCase extends BlockContainer
+public abstract class DisplayCaseBase extends BlockContainer
 {
     private static IIcon[] icons = new IIcon[1];
 
-    public DisplayCase()
+    public DisplayCaseBase(Material material)
     {
-        super(Material.glass);
-        this.setBlockName(Names.displayCase);
-        this.setHardness(2.0F);
+        super(material);
+        this.setHardness(0.5F);
         this.setCreativeTab(UdaldorDecor.tabUdaldorDecor);
         this.setHarvestLevel("pickaxe", 0);
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    {
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile != null && tile instanceof DisplayCaseTileBase)
+        {
+            return ((DisplayCaseTileBase)tile).onActivated(world, player, player.getHeldItem(), side);
+        }
+        return false;
     }
 
     @Override
@@ -41,33 +48,16 @@ public class DisplayCase extends BlockContainer
     {
         ForgeDirection direction = ForgeDirection.getOrientation(side);
         Block block = world.getBlock(x, y, z);
-        return block != ModBlocks.displayCase;
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
-    {
-        TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile != null && tile instanceof TileDisplayCase)
-        {
-            return ((TileDisplayCase)tile).onActivated(world, player, player.getHeldItem(), side);
-        }
-        return false;
+        return block != this;
     }
 
     /**
-     * Called throughout the code as a replacement for ITileEntityProvider.createNewTileEntity
-     * Return the same thing you would from that function.
-     * This will fall back to ITileEntityProvider.createNewTileEntity(World) if this block is a ITileEntityProvider
-     *
-     * @param world
-     * @param metadata The Metadata of the current block
-     * @return A instance of a class extending TileEntity
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
      */
     @Override
-    public TileEntity createTileEntity(World world, int metadata)
+    public boolean renderAsNormalBlock()
     {
-        return new TileDisplayCase();
+        return false;
     }
 
     @Override
@@ -107,17 +97,5 @@ public class DisplayCase extends BlockContainer
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         icons[0] = iconRegister.registerIcon(Resources.MOD_ID + ":" + Names.displayCase);
-    }
-
-    /**
-     * Returns a new instance of a block's tile entity class. Called on placing the block.
-     *
-     * @param var1
-     * @param var2
-     */
-    @Override
-    public TileEntity createNewTileEntity(World var1, int var2)
-    {
-        return new TileDisplayCase();
     }
 }

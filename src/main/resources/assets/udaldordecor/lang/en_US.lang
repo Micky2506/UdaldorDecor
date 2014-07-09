@@ -1,4 +1,7 @@
 # Block localizations
 tile.displayCase.name=Display Case
 
+# Item Localizations
+item.entityNet.name=Entity Net
+
 itemGroup.UdaldorDecor=Udaldor's Decorations
