@@ -1,6 +1,13 @@
 package com.micky2506.udaldordecor.tileentity;
 
 import com.micky2506.udaldordecor.helper.IOHelper;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -16,9 +23,33 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class DisplayCaseTileBase extends TileEntity implements IInventory
 {
-    public ItemStack stack;
+    private static final float ROTATION_PER_TICK = 1F;
+	public ItemStack stack;
     public int clickedSide = -1;
 
+    private Entity cachedEntity;
+    
+    public Entity getCachedEntity(){
+    	return cachedEntity;
+    }
+    
+    /*
+     * This method detects and caches entity in tile data to prevent GC pressure and avoid matrix manipulation in TESR
+     */
+    private void searchForEntities(ItemStack stack){
+    	cachedEntity = null;//Drop cache(reevaluated)
+    	if(stack==null){return;}
+    	if(stack.hasTagCompound() && stack.getTagCompound().hasKey("id")){
+    		//This stack has entity in it!
+            cachedEntity = EntityList.createEntityFromNBT(stack.getTagCompound(), getWorldObj());
+            if (((EntityLiving) cachedEntity).hasCustomNameTag())
+            {
+                ((EntityLiving) cachedEntity).setAlwaysRenderNameTag(true);
+                //((EntityLiving) entity).getCustomNameTag()
+            }   		
+    	}
+    }
+    
     public boolean onActivated(World world, EntityPlayer player, ItemStack playerStack, int side)
     {
         if (playerStack != null)
@@ -54,7 +85,7 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
                 this.clickedSide = side;
             }
         }
-
+        searchForEntities(stack);
         markDirty();
         return true;
     }
@@ -80,6 +111,7 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
             NBTTagList tagList = compound.getTagList("Items", 10);
             NBTTagCompound itemCompound = tagList.getCompoundTagAt(0);
             stack = ItemStack.loadItemStackFromNBT(itemCompound);
+            searchForEntities(stack);
         }
     }
 
@@ -261,4 +293,30 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
     {
         return stack != null;
     }
+
+	@Override
+	public void updateEntity() {
+		if(cachedEntity!=null){
+			cachedEntity.rotationYaw+=ROTATION_PER_TICK;
+			if(cachedEntity instanceof EntityLivingBase){
+				EntityLivingBase living = (EntityLivingBase)cachedEntity;
+				living.renderYawOffset=cachedEntity.rotationYaw;
+				living.prevRenderYawOffset=cachedEntity.rotationYaw;
+				//Head
+				living.rotationYawHead=living.renderYawOffset;
+				living.prevRotationYawHead=living.prevRenderYawOffset;
+			}			
+		}
+		super.updateEntity();
+	}
+
+	@Override
+	public boolean canUpdate() {
+		return FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT;
+	}
+    
+    
+    
+    
+    
 }
