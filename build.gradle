@@ -24,7 +24,7 @@ ext.cclVersion = "1.1.1.81"
 
 version = "0.0.7"
 group = "com.micky.udaldordecor"
-archivesBaseName = "UdaldorDecor-1.7.2"
+archivesBaseName = "UdaldorDecor-1.7.x"
 
 if (env.BUILD_NUMBER != null) {
     version += "-snapshot-" + env.BUILD_NUMBER
