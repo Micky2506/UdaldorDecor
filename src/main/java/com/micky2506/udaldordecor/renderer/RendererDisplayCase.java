@@ -36,9 +36,9 @@ public class RendererDisplayCase extends TileEntitySpecialRenderer
             if (tile.stack != null)
             {
                 Coordinate coordinate = RenderHelper.getCoordinate(tile.clickedSide);
-                coordinate.x += x; //tile.xCoord;
-                coordinate.y += y; //tile.yCoord;
-                coordinate.z += z; //tile.zCoord;
+                coordinate.x += x;
+                coordinate.y += y;
+                coordinate.z += z;
 
                 GL11.glPushMatrix();
                 GL11.glTranslated(coordinate.x, coordinate.y, coordinate.z);
@@ -49,15 +49,14 @@ public class RendererDisplayCase extends TileEntitySpecialRenderer
                 }
                 else
                 {
-                    float entityRotation = RenderHelper.getEntityRotation(coordinate.x + tile.xCoord, coordinate.y, coordinate.z + tile.zCoord) + 90F;
-//                    System.out.println(coordinate.x + " " + coordinate.z + " " + entityRotation);
-                    GL11.glRotatef(entityRotation, 0F, 1F, 0F);
+                    float horizontalEntityRotation = RenderHelper.getHorizontalRotation(coordinate.x + tile.xCoord, coordinate.z + tile.zCoord) + 90F;
+                    GL11.glRotatef(horizontalEntityRotation, 0F, 1F, 0F);
                 }
 
                 if (tile.stack.hasTagCompound() && tile.stack.getTagCompound().hasKey("id")) // Entity rendering
                 {
                     Entity entity = EntityList.createEntityFromNBT(tile.stack.getTagCompound(), tile.getWorldObj());
-                    renderHelper.renderEntity(entity, tile.getWorldObj(), coordinate.x, coordinate.y, coordinate.z);
+                    renderHelper.renderEntity(entity, tile.getWorldObj());
                 }
                 else
                 {

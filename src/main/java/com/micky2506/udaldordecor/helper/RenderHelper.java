@@ -1,20 +1,17 @@
 package com.micky2506.udaldordecor.helper;
 
-import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityPainting;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.opengl.GL11;
 
 public class RenderHelper
 {
@@ -57,40 +54,17 @@ public class RenderHelper
         return coordinate;
     }
 
-    public void renderItem(ItemStack stack)
-    {
-        entityItem.setEntityItemStack(stack);
-        renderer.doRender(entityItem, 0D, 0D, 0D, 0F, 0F);
-    }
-
-    public void renderEntity(Entity entity, World world, double x, double y, double z)
-    {
-        if (entity != null && world != null)
-        {
-            Render renderer = RenderManager.instance.getEntityRenderObject(entity);
-            if (renderer != null)
-            {
-                entity.worldObj = world;
-                renderer.doRender(entity, 0, 0, 0, 0, 0);
-                entity.worldObj = null;
-            }
-        }
-    }
-
-
-    public static float getEntityRotation(double x, double y, double z)
+    @SideOnly(Side.CLIENT)
+    public static float getHorizontalRotation(double x, double z)
     {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
         if (player != null)
         {
-
             double aLength = Math.sqrt(Math.pow(player.posX - x, 2) + Math.pow(player.posZ - z, 2));
             double cLength = Math.sqrt(Math.pow(player.posX - player.posX, 2) + Math.pow(player.posZ - z, 2));
 
             float degrees = (float) Math.toDegrees(Math.asin(cLength / aLength));
-//            String[] strings = {aLength + "", cLength + ""};
-//            System.out.println(StringUtils.join(strings, " "));
 
             if (player.posZ > z && player.posX > x)
             {
@@ -104,10 +78,32 @@ public class RenderHelper
             {
                 return 180F - degrees;
             }
-//            if (player.posZ > z && player.posX < x)
-            return 180F + degrees;
+            else if (player.posZ > z && player.posX < x) // Unneeded because we went through other 3 quadrants
+            {
+                return 180F + degrees;
+            }
         }
 
         return 0F;
+    }
+
+    public void renderItem(ItemStack stack)
+    {
+        entityItem.setEntityItemStack(stack);
+        renderer.doRender(entityItem, 0D, 0D, 0D, 0F, 0F);
+    }
+
+    public void renderEntity(Entity entity, World world)
+    {
+        if (entity != null && world != null)
+        {
+            Render renderer = RenderManager.instance.getEntityRenderObject(entity);
+            if (renderer != null)
+            {
+                entity.worldObj = world;
+                renderer.doRender(entity, 0, 0, 0, 0, 0);
+                entity.worldObj = null;
+            }
+        }
     }
 }
