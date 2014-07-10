@@ -1,10 +1,15 @@
+/*
+!.gitignore
+!/source/
+!/source/*
+!/gradle/
+!/gradle/*
+!gradlew
+!gradlew.bat
+!build.gradle
+*.db
+
 # IntelliJ Project files #
 *.iml
 *.ipr
 *.iws
-
-# Gradle #
-/.gradle/
-/eclipse/
-/build/
-/out/
