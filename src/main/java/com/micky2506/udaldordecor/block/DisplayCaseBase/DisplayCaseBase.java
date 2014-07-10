@@ -31,14 +31,12 @@ public abstract class DisplayCaseBase extends BlockContainer
         this.setHarvestLevel("pickaxe", 0);
     }
 
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    public boolean renderAsNormalBlock()
     {
-        TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile != null && tile instanceof DisplayCaseTileBase)
-        {
-            return ((DisplayCaseTileBase)tile).onActivated(world, player, player.getHeldItem(), side);
-        }
         return false;
     }
 
@@ -50,19 +48,10 @@ public abstract class DisplayCaseBase extends BlockContainer
         return block != this;
     }
 
-    /**
-     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
-     */
     @Override
-    public boolean renderAsNormalBlock()
+    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
-        return false;
-    }
-
-    @Override
-    public boolean isOpaqueCube()
-    {
-        return false;
+        return icons[0];
     }
 
     @Override
@@ -72,23 +61,20 @@ public abstract class DisplayCaseBase extends BlockContainer
     }
 
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    public boolean isOpaqueCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile != null && tile instanceof DisplayCaseTileBase)
         {
-            for (ItemStack stack : ((DisplayCaseTileBase)tile).getDrops())
-            {
-                IOHelper.spawnItemInWorld(world, stack, x, y, z);
-            }
+            return ((DisplayCaseTileBase) tile).onActivated(world, player, player.getHeldItem(), side);
         }
-        super.breakBlock(world, x, y, z, block, meta);
-    }
-
-    @Override
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
-    {
-        return icons[0];
+        return false;
     }
 
     @Override
@@ -96,5 +82,19 @@ public abstract class DisplayCaseBase extends BlockContainer
     public void registerBlockIcons(IIconRegister iconRegister)
     {
         icons[0] = iconRegister.registerIcon(Resources.MOD_ID + ":" + Names.displayCase);
+    }
+
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    {
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile != null && tile instanceof DisplayCaseTileBase)
+        {
+            for (ItemStack stack : ((DisplayCaseTileBase) tile).getDrops())
+            {
+                IOHelper.spawnItemInWorld(world, stack, x, y, z);
+            }
+        }
+        super.breakBlock(world, x, y, z, block, meta);
     }
 }

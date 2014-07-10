@@ -1,24 +1,17 @@
 package com.micky2506.udaldordecor.helper;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import org.lwjgl.opengl.GL11;
 
 public class RenderHelper
 {
@@ -108,7 +101,6 @@ public class RenderHelper
             if (renderer != null)
             {
                 entity.worldObj = world;
-                //((EntityLiving) entity).faceEntity(Minecraft.getMinecraft().thePlayer, 360F, 360F);
                 renderer.doRender(entity, 0, 0, 0, entity.rotationYaw, 0F);
                 entity.worldObj = null;
             }

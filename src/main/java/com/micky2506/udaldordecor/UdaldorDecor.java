@@ -14,7 +14,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraft.creativetab.CreativeTabs;
 
-@Mod(modid = Reference.MOD_ID, name = Reference.NAME,version = Reference.VERSION, dependencies = Reference.DEPENDENCIES)
+@Mod(modid = Reference.MOD_ID, name = Reference.NAME, version = Reference.VERSION, dependencies = Reference.DEPENDENCIES)
 public class UdaldorDecor
 {
     @Mod.Instance(Reference.MOD_ID)

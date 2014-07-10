@@ -14,14 +14,14 @@ public class CreativeTabUdaldorDecor extends CreativeTabs
     }
 
     @Override
-    public Item getTabIconItem()
-    {
-        return null;
-    }
-
-    @Override
     public ItemStack getIconItemStack()
     {
         return new ItemStack(ModBlocks.displayCase);
+    }
+
+    @Override
+    public Item getTabIconItem()
+    {
+        return null;
     }
 }

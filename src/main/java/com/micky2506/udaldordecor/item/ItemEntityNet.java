@@ -28,7 +28,9 @@ public class ItemEntityNet extends Item
     public boolean itemInteractionForEntity(ItemStack itemStack, EntityPlayer player, EntityLivingBase entity)
     {
         if (player.worldObj.isRemote)
+        {
             return false;
+        }
 
         if (!(entity instanceof EntityPlayer))
         {
@@ -53,8 +55,12 @@ public class ItemEntityNet extends Item
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4)
     {
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("id"))
+        {
             list.add("Stored Entity: " + itemStack.getTagCompound().getString("id"));
+        }
         else
+        {
             list.add("No entity stored");
+        }
     }
 }

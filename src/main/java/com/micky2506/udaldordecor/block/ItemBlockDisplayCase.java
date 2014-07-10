@@ -23,17 +23,17 @@ public class ItemBlockDisplayCase extends ItemBlock
     }
 
     @Override
-    public int getMetadata(int meta)
-    {
-        return meta;
-    }
-
-    @Override
     public void getSubItems(Item unkown, CreativeTabs tab, List list)
     {
         for (int i = 0; i < 2; ++i)
         {
             list.add(new ItemStack(unkown, 1, i));
         }
+    }
+
+    @Override
+    public int getMetadata(int meta)
+    {
+        return meta;
     }
 }

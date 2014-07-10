@@ -1,7 +1,6 @@
 package com.micky2506.udaldordecor.proxy;
 
 import com.micky2506.udaldordecor.lib.Names;
-import com.micky2506.udaldordecor.tileentity.DisplayCaseTileBase;
 import com.micky2506.udaldordecor.tileentity.TileRotatingDisplayCase;
 import com.micky2506.udaldordecor.tileentity.TileTrackingDisplayCase;
 import cpw.mods.fml.common.registry.GameRegistry;

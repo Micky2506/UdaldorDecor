@@ -1,7 +1,6 @@
 package com.micky2506.udaldordecor.tileentity;
 
 import com.micky2506.udaldordecor.helper.IOHelper;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.Entity;
@@ -24,32 +23,16 @@ import net.minecraftforge.common.util.ForgeDirection;
 public abstract class DisplayCaseTileBase extends TileEntity implements IInventory
 {
     private static final float ROTATION_PER_TICK = 1F;
-	public ItemStack stack;
+    public ItemStack stack;
     public int clickedSide = -1;
 
     private Entity cachedEntity;
-    
-    public Entity getCachedEntity(){
-    	return cachedEntity;
+
+    public Entity getCachedEntity()
+    {
+        return cachedEntity;
     }
-    
-    /*
-     * This method detects and caches entity in tile data to prevent GC pressure and avoid matrix manipulation in TESR
-     */
-    private void searchForEntities(ItemStack stack){
-    	cachedEntity = null;//Drop cache(reevaluated)
-    	if(stack==null){return;}
-    	if(stack.hasTagCompound() && stack.getTagCompound().hasKey("id")){
-    		//This stack has entity in it!
-            cachedEntity = EntityList.createEntityFromNBT(stack.getTagCompound(), getWorldObj());
-            if (((EntityLiving) cachedEntity).hasCustomNameTag())
-            {
-                ((EntityLiving) cachedEntity).setAlwaysRenderNameTag(true);
-                //((EntityLiving) entity).getCustomNameTag()
-            }   		
-    	}
-    }
-    
+
     public boolean onActivated(World world, EntityPlayer player, ItemStack playerStack, int side)
     {
         if (playerStack != null)
@@ -64,7 +47,9 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
             {
                 --playerStack.stackSize;
                 if (playerStack.stackSize <= 0)
+                {
                     playerStack = null;
+                }
             }
             this.stack.stackSize = 1;
         }
@@ -90,18 +75,61 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
         return true;
     }
 
-    public abstract boolean doRotate();
-
     private void dropInventory(double x, double y, double z, boolean justEmpty)
     {
 
         if (stack != null && !justEmpty)
+        {
             IOHelper.spawnItemInWorld(this.getWorldObj(), stack, x, y, z);
+        }
         stack = null;
         markDirty();
     }
 
+    /*
+     * This method detects and caches entity in tile data to prevent GC pressure and avoid matrix manipulation in TESR
+     */
+    private void searchForEntities(ItemStack stack)
+    {
+        cachedEntity = null;//Drop cache(reevaluated)
+        if (stack == null)
+        {
+            return;
+        }
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("id"))
+        {
+            //This stack has entity in it!
+            cachedEntity = EntityList.createEntityFromNBT(stack.getTagCompound(), getWorldObj());
+            if (((EntityLiving) cachedEntity).hasCustomNameTag())
+            {
+                ((EntityLiving) cachedEntity).setAlwaysRenderNameTag(true);
+                //((EntityLiving) entity).getCustomNameTag()
+            }
+        }
+    }
+
+    public abstract boolean doRotate();
+
+    public ItemStack[] getDrops()
+    {
+        if (stack != null)
+        {
+            return new ItemStack[] { stack };
+        }
+        else
+        {
+            return new ItemStack[] { };
+        }
+    }
+
+    /**
+     * Returns the number of slots in the inventory.
+     */
     @Override
+    public int getSizeInventory()
+    {
+        return 1;
+    }    @Override
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
@@ -113,67 +141,6 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
             stack = ItemStack.loadItemStackFromNBT(itemCompound);
             searchForEntities(stack);
         }
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound compound)
-    {
-        super.writeToNBT(compound);
-        compound.setInteger("clickedSide", clickedSide);
-        if (this.stack != null)
-        {
-            NBTTagList itemTagList = new NBTTagList();
-            NBTTagCompound itemCompound = new NBTTagCompound();
-            itemCompound = this.stack.writeToNBT(itemCompound);
-            itemTagList.appendTag(itemCompound);
-            compound.setTag("Items", itemTagList);
-        }
-
-    }
-
-    /**
-     * Return an {@link net.minecraft.util.AxisAlignedBB} that controls the visible scope of a {@link TileEntitySpecialRenderer} associated with this {@link net.minecraft.tileentity.TileEntity}
-     * Defaults to the collision bounding box {@link Block#getCollisionBoundingBoxFromPool(net.minecraft.world.World, int, int, int)} associated with the block
-     * at this location.
-     *
-     * @return an appropriately size {@link net.minecraft.util.AxisAlignedBB} for the {@link net.minecraft.tileentity.TileEntity}
-     */
-    @Override
-    public AxisAlignedBB getRenderBoundingBox()
-    {
-        //TODO: Improve getting render bounding box.
-        return super.getRenderBoundingBox().expand(5D, 5D, 5D); // Chose 5D as that is (I think) max hitbox of a vanilla entity
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
-    {
-        readFromNBT(pkt.func_148857_g());
-    }
-
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        NBTTagCompound tag = new NBTTagCompound(); //ObfuscationReflectionHelper.getPrivateValue(S35PacketUpdateTileEntity.class, pkt, "field_148860_e", "e");
-        writeToNBT(tag);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
-    }
-
-    public ItemStack[] getDrops()
-    {
-        if (stack != null)
-            return new ItemStack[] { stack };
-        else
-            return new ItemStack[]{};
-    }
-
-    /**
-     * Returns the number of slots in the inventory.
-     */
-    @Override
-    public int getSizeInventory()
-    {
-        return 1;
     }
 
     /**
@@ -206,6 +173,20 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
             markDirty();
         }
         return returnedStack;
+    }    @Override
+    public void writeToNBT(NBTTagCompound compound)
+    {
+        super.writeToNBT(compound);
+        compound.setInteger("clickedSide", clickedSide);
+        if (this.stack != null)
+        {
+            NBTTagList itemTagList = new NBTTagList();
+            NBTTagCompound itemCompound = new NBTTagCompound();
+            itemCompound = this.stack.writeToNBT(itemCompound);
+            itemTagList.appendTag(itemCompound);
+            compound.setTag("Items", itemTagList);
+        }
+
     }
 
     /**
@@ -230,6 +211,18 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
     public void setInventorySlotContents(int var1, ItemStack var2)
     {
         stack = var2;
+    }    /**
+     * Return an {@link net.minecraft.util.AxisAlignedBB} that controls the visible scope of a {@link TileEntitySpecialRenderer} associated with this {@link net.minecraft.tileentity.TileEntity}
+     * Defaults to the collision bounding box {@link Block#getCollisionBoundingBoxFromPool(net.minecraft.world.World, int, int, int)} associated with the block
+     * at this location.
+     *
+     * @return an appropriately size {@link net.minecraft.util.AxisAlignedBB} for the {@link net.minecraft.tileentity.TileEntity}
+     */
+    @Override
+    public AxisAlignedBB getRenderBoundingBox()
+    {
+        //TODO: Improve getting render bounding box.
+        return super.getRenderBoundingBox().expand(5D, 5D, 5D); // Chose 5D as that is (I think) max hitbox of a vanilla entity
     }
 
     /**
@@ -248,6 +241,10 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
     public boolean hasCustomInventoryName()
     {
         return false;
+    }    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    {
+        readFromNBT(pkt.func_148857_g());
     }
 
     /**
@@ -268,6 +265,12 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
     public boolean isUseableByPlayer(EntityPlayer var1)
     {
         return false;
+    }    @Override
+    public Packet getDescriptionPacket()
+    {
+        NBTTagCompound tag = new NBTTagCompound(); //ObfuscationReflectionHelper.getPrivateValue(S35PacketUpdateTileEntity.class, pkt, "field_148860_e", "e");
+        writeToNBT(tag);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
     }
 
     @Override
@@ -294,29 +297,41 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
         return stack != null;
     }
 
-	@Override
-	public void updateEntity() {
-		if(cachedEntity!=null){
-			cachedEntity.rotationYaw+=ROTATION_PER_TICK;
-			if(cachedEntity instanceof EntityLivingBase){
-				EntityLivingBase living = (EntityLivingBase)cachedEntity;
-				living.renderYawOffset=cachedEntity.rotationYaw;
-				living.prevRenderYawOffset=cachedEntity.rotationYaw;
-				//Head
-				living.rotationYawHead=living.renderYawOffset;
-				living.prevRotationYawHead=living.prevRenderYawOffset;
-			}			
-		}
-		super.updateEntity();
-	}
 
-	@Override
-	public boolean canUpdate() {
-		return FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT;
-	}
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+    @Override
+    public void updateEntity()
+    {
+        if (cachedEntity != null)
+        {
+            cachedEntity.rotationYaw += ROTATION_PER_TICK;
+            if (cachedEntity instanceof EntityLivingBase)
+            {
+                EntityLivingBase living = (EntityLivingBase) cachedEntity;
+                living.renderYawOffset = cachedEntity.rotationYaw;
+                living.prevRenderYawOffset = cachedEntity.rotationYaw;
+                //Head
+                living.rotationYawHead = living.renderYawOffset;
+                living.prevRotationYawHead = living.prevRenderYawOffset;
+            }
+        }
+        super.updateEntity();
+    }
+
+    @Override
+    public boolean canUpdate()
+    {
+        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
+    }
+
+
 }
