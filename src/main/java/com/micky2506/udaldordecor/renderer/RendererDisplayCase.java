@@ -34,7 +34,7 @@ public class RendererDisplayCase extends TileEntitySpecialRenderer
 
             if (tile.stack != null)
             {
-                Coordinate coordinate = RenderHelper.getCoordinate(tile.clickedSide);
+                Coordinate coordinate = RenderHelper.getOffsetCoordinate(tile.clickedSide);
                 coordinate.x += x;
                 coordinate.y += y;
                 coordinate.z += z;
@@ -49,6 +49,7 @@ public class RendererDisplayCase extends TileEntitySpecialRenderer
                 }
                 else
                 {
+                    // TODO: Cache entityItem and rotate it the same as mobs.
                     if (tile.doRotate())
                     {
                         GL11.glRotatef(tick * tickMultiplier, 0F, 1F, 0F);

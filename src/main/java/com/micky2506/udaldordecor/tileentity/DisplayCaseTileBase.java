@@ -1,8 +1,11 @@
 package com.micky2506.udaldordecor.tileentity;
 
+import com.micky2506.udaldordecor.helper.Coordinate;
 import com.micky2506.udaldordecor.helper.IOHelper;
+import com.micky2506.udaldordecor.helper.RenderHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
@@ -17,12 +20,13 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class DisplayCaseTileBase extends TileEntity implements IInventory
 {
-    private static final float ROTATION_PER_TICK = 1F;
+    private static final float ROTATION_PER_TICK = 10F;
     public ItemStack stack;
     public int clickedSide = -1;
 
@@ -100,6 +104,8 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
         {
             //This stack has entity in it!
             cachedEntity = EntityList.createEntityFromNBT(stack.getTagCompound(), getWorldObj());
+            Coordinate coordinate = RenderHelper.getOffsetCoordinate(clickedSide);
+            cachedEntity.setPosition(coordinate.x + xCoord, coordinate.y + yCoord, coordinate.z + zCoord);
             if (((EntityLiving) cachedEntity).hasCustomNameTag())
             {
                 ((EntityLiving) cachedEntity).setAlwaysRenderNameTag(true);
@@ -129,7 +135,9 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
     public int getSizeInventory()
     {
         return 1;
-    }    @Override
+    }
+
+    @Override
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
@@ -173,7 +181,9 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
             markDirty();
         }
         return returnedStack;
-    }    @Override
+    }
+
+    @Override
     public void writeToNBT(NBTTagCompound compound)
     {
         super.writeToNBT(compound);
@@ -211,7 +221,9 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
     public void setInventorySlotContents(int var1, ItemStack var2)
     {
         stack = var2;
-    }    /**
+    }
+
+    /**
      * Return an {@link net.minecraft.util.AxisAlignedBB} that controls the visible scope of a {@link TileEntitySpecialRenderer} associated with this {@link net.minecraft.tileentity.TileEntity}
      * Defaults to the collision bounding box {@link Block#getCollisionBoundingBoxFromPool(net.minecraft.world.World, int, int, int)} associated with the block
      * at this location.
@@ -241,7 +253,9 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
     public boolean hasCustomInventoryName()
     {
         return false;
-    }    @Override
+    }
+
+    @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
         readFromNBT(pkt.func_148857_g());
@@ -265,7 +279,9 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
     public boolean isUseableByPlayer(EntityPlayer var1)
     {
         return false;
-    }    @Override
+    }
+
+    @Override
     public Packet getDescriptionPacket()
     {
         NBTTagCompound tag = new NBTTagCompound(); //ObfuscationReflectionHelper.getPrivateValue(S35PacketUpdateTileEntity.class, pkt, "field_148860_e", "e");
@@ -297,29 +313,33 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
         return stack != null;
     }
 
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public void updateEntity()
     {
         if (cachedEntity != null)
         {
-            cachedEntity.rotationYaw += ROTATION_PER_TICK;
+            if (this.doRotate())
+            {
+                cachedEntity.rotationYaw += ROTATION_PER_TICK;
+            }
+            else
+            {
+                ((EntityLiving) cachedEntity).faceEntity(Minecraft.getMinecraft().thePlayer, 360F, 360F);
+            }
+
             if (cachedEntity instanceof EntityLivingBase)
             {
                 EntityLivingBase living = (EntityLivingBase) cachedEntity;
+
+                // Body yaw
                 living.renderYawOffset = cachedEntity.rotationYaw;
                 living.prevRenderYawOffset = cachedEntity.rotationYaw;
-                //Head
+
+                // Head pitch
+                living.rotationPitch = cachedEntity.rotationPitch;
+                living.prevRotationPitch = cachedEntity.rotationPitch;
+
+                // Head
                 living.rotationYawHead = living.renderYawOffset;
                 living.prevRotationYawHead = living.prevRenderYawOffset;
             }
@@ -332,6 +352,4 @@ public abstract class DisplayCaseTileBase extends TileEntity implements IInvento
     {
         return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
     }
-
-
 }

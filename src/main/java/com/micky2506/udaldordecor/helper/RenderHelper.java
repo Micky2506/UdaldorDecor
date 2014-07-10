@@ -37,7 +37,7 @@ public class RenderHelper
         entityItem.hoverStart = 0F;
     }
 
-    public static Coordinate getCoordinate(int side)
+    public static Coordinate getOffsetCoordinate(int side)
     {
         Coordinate coordinate = new Coordinate(0.5D, 0D, 0.5D);
         if (side >= 0)
@@ -54,6 +54,8 @@ public class RenderHelper
         return coordinate;
     }
 
+
+    // Used only for item rendering
     @SideOnly(Side.CLIENT)
     public static float getHorizontalRotation(double x, double z)
     {
@@ -90,7 +92,7 @@ public class RenderHelper
     public void renderItem(ItemStack stack)
     {
         entityItem.setEntityItemStack(stack);
-        renderer.doRender(entityItem, 0D, 0D, 0D, 0F, 0F);
+        renderer.doRender(entityItem, 0D, 0D, 0D, entityItem.rotationYaw, 0F);
     }
 
     public void renderEntity(Entity entity, World world, double x, double z)
